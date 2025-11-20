@@ -1,6 +1,6 @@
 # 📖 Fiadopay - Refatoração com Anotações e Processamento Assíncrono
 
-Este projeto foi refatorado com foco em engenharia de software, adicionando **anotações customizadas** e **processamento assíncrono**.  
+Este projeto foi refatorado com foco em engenharia, adicionando **anotações customizadas** e **processamento assíncrono**.  
 O objetivo foi melhorar clareza, extensibilidade e responsividade sem alterar o contrato da API existente.
 
 ---
