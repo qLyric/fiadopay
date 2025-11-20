@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import edu.ucsal.fiadopay.annotations.*;
 
+//exemplo que este pagamento é feito no cartao
+@PaymentMethod(type = "CARD")
 @RestController
 @RequestMapping("/fiadopay/gateway")
 @RequiredArgsConstructor
@@ -16,6 +19,7 @@ public class PaymentController {
 
   @PostMapping("/payments")
   @SecurityRequirement(name = "bearerAuth")
+  @AntiFraud(name = "HighAmount", threshold = 5000.0) //antifraude com valores altos
   public ResponseEntity<PaymentResponse> create(
       @Parameter(hidden = true) @RequestHeader("Authorization") String auth,
       @RequestHeader(value="Idempotency-Key", required=false) String idemKey,
