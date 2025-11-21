@@ -1,5 +1,7 @@
 package edu.ucsal.fiadopay.service;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import com.fasterxml.jackson.databind.ObjectMapper; 
 import edu.ucsal.fiadopay.controller.PaymentRequest;
 import edu.ucsal.fiadopay.controller.PaymentResponse;
@@ -35,6 +37,7 @@ public class PaymentService {
   private final PaymentRepository payments;
   private final WebhookDeliveryRepository deliveries;
   private final ObjectMapper objectMapper;
+  private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
   @Value("${fiadopay.webhook-secret}") String secret;
   @Value("${fiadopay.processing-delay-ms}") long delay;
@@ -122,7 +125,7 @@ public class PaymentService {
     p.setStatus(Payment.Status.REFUNDED);
     p.setUpdatedAt(Instant.now());
     payments.save(p);
-    sendWebhook(p);
+    sendWebhookAsync(p);
     return Map.of("id","ref_"+UUID.randomUUID(),"status","PENDING");
   }
 
@@ -136,10 +139,16 @@ public class PaymentService {
     p.setUpdatedAt(Instant.now());
     payments.save(p);
 
-    sendWebhook(p);
+    sendWebhookAsync(p);
   }
 
   @WebhookSink("payment.updated")
+  public void sendWebhookAsync(Payment p) {
+	    // Submete a execução do método síncrono 'sendWebhook'
+	    // para uma thread disponível no pool do ExecutorService.
+	    executor.submit(() -> sendWebhook(p));
+	}
+  
   private void sendWebhook(Payment p){
     var merchant = merchants.findById(p.getMerchantId()).orElse(null);
     if (merchant==null || merchant.getWebhookUrl()==null || merchant.getWebhookUrl().isBlank()) return;
