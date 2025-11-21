@@ -1,6 +1,6 @@
 package edu.ucsal.fiadopay.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper; 
 import edu.ucsal.fiadopay.controller.PaymentRequest;
 import edu.ucsal.fiadopay.controller.PaymentResponse;
 import edu.ucsal.fiadopay.domain.Merchant;
@@ -26,6 +26,8 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import edu.ucsal.fiadopay.annotations.WebhookSink;
 
 @Service
 public class PaymentService {
@@ -137,6 +139,7 @@ public class PaymentService {
     sendWebhook(p);
   }
 
+  @WebhookSink("payment.updated")
   private void sendWebhook(Payment p){
     var merchant = merchants.findById(p.getMerchantId()).orElse(null);
     if (merchant==null || merchant.getWebhookUrl()==null || merchant.getWebhookUrl().isBlank()) return;
@@ -176,6 +179,7 @@ public class PaymentService {
     CompletableFuture.runAsync(() -> tryDeliver(delivery.getId()));
   }
 
+  @WebhookSink("delivery.retry")
   private void tryDeliver(Long deliveryId){
     var d = deliveries.findById(deliveryId).orElse(null);
     if (d==null) return;
