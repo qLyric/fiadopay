@@ -47,6 +47,9 @@ src/main/java/edu/ucsal/fiadopay/
  └── service/
       └── PaymentService.java
 
+## Prints
+
+<img width="872" height="402" alt="Annotationsexample" src="https://github.com/user-attachments/assets/633f0183-c25f-48bb-b984-fe03a8445adc" />
 
 ## ➕MAIS
 
