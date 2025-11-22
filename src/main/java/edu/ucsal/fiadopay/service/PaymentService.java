@@ -125,7 +125,7 @@ public class PaymentService {
     p.setStatus(Payment.Status.REFUNDED);
     p.setUpdatedAt(Instant.now());
     payments.save(p);
-    sendWebhookAsync(p);
+    sendWebhookAsync(p); // Substituiu sendWebhook(p)
     return Map.of("id","ref_"+UUID.randomUUID(),"status","PENDING");
   }
 
@@ -139,9 +139,11 @@ public class PaymentService {
     p.setUpdatedAt(Instant.now());
     payments.save(p);
 
-    sendWebhookAsync(p);
+    sendWebhookAsync(p); //Substituiu sendWebhook(p)
   }
 
+  //método público que atua como wrapper assíncrono
+  
   @WebhookSink("payment.updated")
   public void sendWebhookAsync(Payment p) {
 	    // Submete a execução do método síncrono 'sendWebhook'
